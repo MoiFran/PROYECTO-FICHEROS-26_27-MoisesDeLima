@@ -1,0 +1,26 @@
+# Node / Vite dependencies and build
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Java / Maven build outputs
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+*.log
+
+# Temp files
+*.tmp
+*.bak
