@@ -2269,8 +2269,7 @@ tbody td {
 
 .code-display-body {
   display: flex;
-  max-height: 480px;
-  overflow-y: auto;
+  overflow: visible;
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
   font-size: 0.88rem;
   line-height: 1.6;
@@ -2293,6 +2292,7 @@ tbody td {
   color: #f1f5f9;
   white-space: pre;
   overflow-x: auto;
+  overflow-y: visible;
   flex: 1;
   line-height: 1.6;
 }
