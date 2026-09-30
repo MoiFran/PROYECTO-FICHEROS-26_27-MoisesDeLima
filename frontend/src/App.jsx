@@ -4,7 +4,6 @@ import ConversorFicheros from './components/ConversorFicheros';
 import VisorWebFicheros from './components/VisorWebFicheros';
 import HistorialTable from './components/HistorialTable';
 import PresentacionPage from './components/PresentacionPage';
-import DocumentacionGuia from './components/DocumentacionGuia';
 import { getEnvios } from './api';
 
 export default function App() {
@@ -47,11 +46,6 @@ export default function App() {
           <div className="badge">UT02 · Acceso a Datos</div>
           <h1>Sistema de Gestión y Inspección de Envíos</h1>
           <p>Manejo de Ficheros en Formatos: Binario (.dat) · XML (.xml) · CSV (.csv) · JSON (.json)</p>
-          <div style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'center', gap: '0.75rem' }}>
-            <a href="#seccion-documentacion-guia" className="btn btn-ghost btn-sm" style={{ background: 'rgba(167, 139, 250, 0.15)', color: '#a78bfa', borderColor: 'rgba(167, 139, 250, 0.3)' }}>
-              📚 Ver Librerías & Guía de Uso
-            </a>
-          </div>
         </header>
 
         {/* Bloque 1: Creación y Persistencia de Envíos */}
@@ -65,9 +59,6 @@ export default function App() {
 
         {/* Bloque 4: Historial y Persistencia en Base de Datos */}
         <HistorialTable envios={historial} onRefresh={fetchHistorial} onToast={addToast} />
-
-        {/* Bloque 5: Documentación Técnica de Librerías y Guía de Uso Paso a Paso */}
-        <DocumentacionGuia />
       </div>
 
       {/* Notificaciones flotantes (Toasts) */}
@@ -79,4 +70,5 @@ export default function App() {
     </>
   );
 }
+
 

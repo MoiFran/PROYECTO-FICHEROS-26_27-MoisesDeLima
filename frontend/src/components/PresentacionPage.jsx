@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import DocumentacionGuia from './DocumentacionGuia';
 
 const BLOQUES_ARQUITECTURA = [
   {
@@ -463,160 +464,11 @@ export default function PresentacionPage({ onVolver }) {
 
       </div>
 
-      {/* Sección 2: Inventario Completo de Paquetes y Librerías */}
-      <div className="pres-detail-panel" style={{ borderColor: 'rgba(167, 139, 250, 0.4)', marginTop: '2rem' }}>
-        <div className="detail-panel-header">
-          <div className="detail-icon-box" style={{ background: 'rgba(167, 139, 250, 0.2)', borderColor: 'rgba(167, 139, 250, 0.5)' }}>
-            <span>📦</span>
-          </div>
-          <div>
-            <span className="detail-number-badge" style={{ color: '#a78bfa', borderColor: 'rgba(167, 139, 250, 0.4)', background: 'rgba(167, 139, 250, 0.15)' }}>
-              Documentación Técnica · Dependencias
-            </span>
-            <h2 className="detail-title">Explicación de Paquetes y Librerías Usadas</h2>
-            <p className="detail-sub">Justificación punto por punto de los módulos del Backend Java, Frontend React y Herramientas DevOps</p>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.25rem', marginTop: '1rem' }}>
-          
-          {/* Backend Java / Spring Boot */}
-          <div className="justification-box tech-box" style={{ margin: 0 }}>
-            <div className="box-tag" style={{ background: 'rgba(34, 211, 238, 0.2)', color: '#22d3ee' }}>☕ Backend Java & Spring Boot (pom.xml)</div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <li>
-                <strong style={{ color: '#60a5fa' }}>spring-boot-starter-web:</strong> Provee el framework Spring MVC, contenedores Tomcat embebidos, anotaciones REST (@RestController, @PostMapping) y serialización JSON.
-              </li>
-              <li>
-                <strong style={{ color: '#60a5fa' }}>spring-boot-starter-data-jpa:</strong> Capa de abstracción ORM basada en Hibernate. Mapea la entidad Java Envio a SQL y gestiona transacciones mediante JpaRepository sin SQL manual.
-              </li>
-              <li>
-                <strong style={{ color: '#60a5fa' }}>com.h2database:h2:</strong> Motor de Base de Datos relacional en memoria (jdbc:h2:mem:enviosdb). Permite ejecución inmediata sin instalar servidores BD locales y expone la consola /h2-console.
-              </li>
-              <li>
-                <strong style={{ color: '#60a5fa' }}>jackson-dataformat-xml:</strong> Extensión para el ObjectMapper de Jackson que permite transformar objetos DTO Java directamente a XML y viceversa.
-              </li>
-              <li>
-                <strong style={{ color: '#60a5fa' }}>spring-boot-starter-test:</strong> Suite de pruebas automatizadas (JUnit 5, Mockito y Spring Test).
-              </li>
-            </ul>
-          </div>
-
-          {/* Frontend React / Vite */}
-          <div className="justification-box requirement-box" style={{ margin: 0 }}>
-            <div className="box-tag" style={{ background: 'rgba(167, 139, 250, 0.2)', color: '#a78bfa' }}>⚛️ Frontend React & Vite (package.json)</div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <li>
-                <strong style={{ color: '#a78bfa' }}>react & react-dom (v19):</strong> Framework de interfaz basado en componentes funcionales y Hooks (useState, useEffect, useRef, useMemo) para reactividad instantánea en el DOM virtual.
-              </li>
-              <li>
-                <strong style={{ color: '#a78bfa' }}>vite & @vitejs/plugin-react:</strong> Herramienta de compilación y servidor de desarrollo ultra-rápido basado en Native ES Modules.
-              </li>
-              <li>
-                <strong style={{ color: '#a78bfa' }}>lucide-react:</strong> Librería de iconos SVG ligeros (Package, RefreshCw, Database, Eye, Download) que proporcionan claridad visual a cada acción del usuario.
-              </li>
-              <li>
-                <strong style={{ color: '#a78bfa' }}>canvas-confetti:</strong> Efecto visual interactivo que dispara confeti al generar o convertir un fichero con éxito para mejorar la experiencia pedagógica.
-              </li>
-            </ul>
-          </div>
-
-          {/* DevOps & Tooling */}
-          <div className="justification-box extras-box" style={{ margin: 0 }}>
-            <div className="box-tag" style={{ background: 'rgba(52, 211, 153, 0.2)', color: '#34d399' }}>🛠️ Generación de Documentos & Cloud DevOps</div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <li>
-                <strong style={{ color: '#34d399' }}>pdfkit (Node.js):</strong> Librería de maquetación vectorial para construir programáticamente la Memoria Oficial PDF (Proyecto_UT02_AccesoADatos_MoisesDeLima.pdf) con hipervínculos navegables.
-              </li>
-              <li>
-                <strong style={{ color: '#34d399' }}>Docker (Multi-Stage Build):</strong> Imagen contenedora dividida en Stage 1 (Maven + OpenJDK 21) para compilación y Stage 2 (Eclipse Temurin JRE 21 minimal) para ejecución eficiente en Render.com.
-              </li>
-              <li>
-                <strong style={{ color: '#34d399' }}>Vercel + Render CI/CD:</strong> Despliegue automatizado en la nube conectado al repositorio GitHub que compila el frontend y backend en cada commit.
-              </li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Sección 3: Guía de Uso Paso a Paso */}
-      <div className="pres-detail-panel" style={{ borderColor: 'rgba(52, 211, 153, 0.4)', marginTop: '2rem' }}>
-        <div className="detail-panel-header">
-          <div className="detail-icon-box" style={{ background: 'rgba(52, 211, 153, 0.2)', borderColor: 'rgba(52, 211, 153, 0.5)' }}>
-            <span>🗺️</span>
-          </div>
-          <div>
-            <span className="detail-number-badge" style={{ color: '#34d399', borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.15)' }}>
-              Manual de Evaluación · Paso a Paso
-            </span>
-            <h2 className="detail-title">Guía de Uso Integrada del Sistema</h2>
-            <p className="detail-sub">Paso a paso para probar todas las funciones desarrolladas en el proyecto</p>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-          
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#3b82f6', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 1</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>🌐 Acceso Web & Tolerancia a Fallos</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Accede a la URL de Vercel. Si el backend en Render se encuentra en reposo por inactividad, la app activa automáticamente su motor local JavaScript (DataView) sin bloquear la interfaz.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#8b5cf6', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 2</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>📝 Bloque 1: Crear y Guardar Envíos</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Rellena el formulario. Pulsa <strong>💾 Guardar en Fichero</strong> para descargar en .dat, .xml, .csv o .json, o pulsa <strong>🗄️ Guardar en BD</strong> para registrarlo mediante Spring Data JPA.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#ec4899', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 3</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>⚡ Bloque 2: Conversión entre Formatos</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              En la pestaña Conversor, pega cualquier fichero de origen, selecciona el formato de destino (ej: CSV -&gt; XML) y pulsa <strong>⚡ Convertir Fichero</strong>.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#10b981', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 4</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>👁️ Bloque 3: Inspección en Visor Web IDE</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Cambia a "Visor Web" para inspeccionar el contenido de cualquier archivo con números de línea y formato resaltado sin necesidad de software externo.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#f59e0b', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 5</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>🗄️ Bloque 4: Consulta de BD H2</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Revisa los registros guardados en la tabla H2 en "Historial en BD" y pulsa el botón <strong>👁️ Ver en Visor</strong> para abrirlos directamente en el visor de código.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#06b6d4', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 6</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>🧊 Presentación 3D Académica</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Pulsa el botón flotante en la esquina superior izquierda (con animación de vibración de 3s) para abrir la defensa en cubo 3D con explicaciones de código y justificaciones.
-            </p>
-          </div>
-
-          <div className="detail-format-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="badge" style={{ background: '#64748b', color: '#fff', fontSize: '0.75rem', marginBottom: '0.4rem', display: 'inline-block' }}>Paso 7</span>
-            <h4 style={{ color: '#f8fafc', margin: '0.2rem 0' }}>📄 Descargar Informe PDF</h4>
-            <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
-              Descarga o adjunta en la plataforma Campus Virtual el documento <code>Proyecto_UT02_AccesoADatos_MoisesDeLima.pdf</code> que incluye los enlaces oficiales de entrega.
-            </p>
-          </div>
-
-        </div>
-      </div>
+      {/* Sección 2: Explicación de Paquetes, Librerías & Guía de Uso del Sistema */}
+      <DocumentacionGuia />
 
     </div>
   );
 }
+
 
