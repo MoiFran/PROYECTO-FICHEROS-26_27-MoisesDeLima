@@ -7,13 +7,17 @@ const BLOQUES_ARQUITECTURA = [
     icon: '🎨',
     color: '#a78bfa',
     gradient: 'linear-gradient(135deg, rgba(167,139,250,0.2), rgba(108,99,255,0.05))',
-    title: 'Frontend React 19',
-    sub: 'Capa Cliente & Experiencia de Usuario',
+    title: 'Frontend (React 19 + Vite)',
+    sub: 'Capa Cliente & Interfaz de Usuario',
     tech: ['React 19', 'Vite', 'Vanilla CSS', 'Glassmorphism'],
-    summary: 'Interfaz de usuario reactiva, fluida y con estados en tiempo real.',
-    description: 'Gestiona la entrada de datos mediante componentes desacoplados. Incluye modales interactivos pedagógicos, notificaciones toast flotantes y actualización del DOM sin recargar la página.',
-    codeTitle: 'React API Fetch Component',
-    code: `// Comunicación cliente -> servidor API REST
+    
+    requisito: 'Crear una interfaz interactiva y fácil de usar para gestionar la entrada de datos, conversión y previsualización de envíos.',
+    justificacion: 'Se utilizó React 19 con Vite para lograr un renderizado reactivo instantáneo en el cliente (DOM virtual). Evita recargas completas de la página (location.reload), lo que permite manipular ficheros y convertir formatos de forma ininterrumpida con excelente rendimiento.',
+    extras: 'Visor Web de archivos estilo editor IDE con números de línea y resaltado, modales interactivos de confirmación previa a la descarga, y sistema flotante de avisos Toasts.',
+    justificacionExtras: 'Permite al estudiante/profesor examinar físicamente la estructura cruda del código de cada archivo (JSON, XML, CSV, Binario) desde la propia web sin necesidad de instalar o abrir programas externos como Bloc de Notas o Excel.',
+    
+    codeTitle: 'Consumo de API REST desde React',
+    code: `// Petición asíncrona desde el cliente React al backend Spring Boot
 export const guardarFichero = async (envio, formato, nombre) => {
   const res = await fetch(\`/api/files/guardar/\${formato}?nombreFichero=\${nombre}\`, {
     method: 'POST',
@@ -29,11 +33,15 @@ export const guardarFichero = async (envio, formato, nombre) => {
     icon: '⚙️',
     color: '#22d3ee',
     gradient: 'linear-gradient(135deg, rgba(34,211,238,0.2), rgba(8,145,178,0.05))',
-    title: 'Backend Java 21',
-    sub: 'Servidor Spring Boot 3 API REST',
+    title: 'Backend (Java 21 + Spring Boot 3)',
+    sub: 'Servidor API REST & Inyección de Dependencias',
     tech: ['Java 21', 'Spring Boot 3', 'Spring Web', 'Maven'],
-    summary: 'Servidor de aplicaciones REST de alto rendimiento.',
-    description: 'Expone endpoints RESTful con anotaciones @RestController para orquestar la lógica de negocio, procesar cargas multipart y generar archivos binarios, XML, CSV y JSON.',
+    
+    requisito: 'Desarrollar la lógica de servidor en Java para procesar peticiones, parsear archivos y gestionar las operaciones del sistema.',
+    justificacion: 'Spring Boot simplifica la creación de APIs REST profesionales mediante Inversión de Control (IoC) e Inyección de Dependencias (@Autowired / constructor). Separa limpiamente la capa de controladores (@RestController) de la capa de servicio (@Service), facilitando el mantenimiento y escalabilidad del código.',
+    extras: 'Endpoints Multipart (/api/files/abrir) para recibir archivos físicos subidos por el usuario, parsearlos dinámicamente y devolver el modelo JSON; y respuestas ResponseEntity<byte[]> con cabeceras de descarga directa.',
+    justificacionExtras: 'Transforma el backend en una API verdaderamente reusable y decoupled que puede ser consumida por cualquier cliente (Web, Móvil, Postman o comandos cURL).',
+    
     codeTitle: 'Spring Boot REST Controller',
     code: `@RestController
 @RequestMapping("/api/files")
@@ -41,7 +49,9 @@ public class FileController {
     @PostMapping("/guardar/{formato}")
     public ResponseEntity<byte[]> guardar(@PathVariable String formato, @RequestBody Envio envio) {
         byte[] bytes = fileService.guardarSegunFormato(envio, formato);
-        return ResponseEntity.ok().body(bytes);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=envio." + formato)
+                .body(bytes);
     }
 }`,
   },
@@ -51,18 +61,22 @@ public class FileController {
     icon: '📄',
     color: '#34d399',
     gradient: 'linear-gradient(135deg, rgba(52,211,153,0.2), rgba(5,150,105,0.05))',
-    title: 'Motor de Ficheros',
-    sub: 'UT02 · Persistencia en 4 Formatos',
-    tech: ['DataOutputStream', 'Jackson JSON', 'DOM XML', 'CSV Builder'],
-    summary: 'El núcleo de la asignatura: lectura y escritura en 4 estructuras.',
-    description: 'Implementa los 4 formatos requeridos en la UT02:',
-    formats: [
-      { name: '📦 Binario (.dat)', desc: 'Bytes continuos mediante DataOutputStream (writeUTF, writeDouble).' },
-      { name: '📄 XML (.xml)', desc: 'Etiquetas jerárquicas encadenadas (<envio><destino>...</destino></envio>).' },
-      { name: '📊 CSV (.csv)', desc: 'Registros tabulares separados por comas para hojas de cálculo.' },
-      { name: '🔧 JSON (.json)', desc: 'Pares clave-valor estructurados en objetos JSON.' },
+    title: 'Motor de Ficheros (UT02 Acceso a Datos)',
+    sub: 'Persistencia & Conversión en 4 Formatos',
+    tech: ['DataOutputStream', 'Jackson JSON', 'DOM / XML', 'CSV Builder'],
+    
+    requisito: 'El núcleo obligatorio de la UT02: Implementar la lectura, escritura y manipulación de archivos en 4 formatos: Binario (.dat), XML (.xml), CSV (.csv) y JSON (.json).',
+    justificacion: 'Se desarrollaron 4 parsers/generadores específicos en Java:',
+    subItems: [
+      { name: '📦 Binario (.dat)', desc: 'Utiliza DataOutputStream y DataInputStream para escribir/leer tipos de datos primitivos en secuencias de bytes continuas. Es el formato de menor espacio en disco pero requiere un programa específico.' },
+      { name: '📄 XML (.xml)', desc: 'Utiliza estructuras de etiquetas jerárquicas con apertura y cierre (<envio><destino>...</destino></envio>). Estándar de interoperabilidad enterprise.' },
+      { name: '📊 CSV (.csv)', desc: 'Organiza la información en filas tabulares delimitadas por comas. Es el formato universal para analítica de datos y software como Excel.' },
+      { name: '🔧 JSON (.json)', desc: 'Serializa objetos Java a pares clave-valor usando la librería Jackson (ObjectMapper). Estándar moderno de intercambio en APIs Web.' },
     ],
-    codeTitle: 'Escritura Binaria en Java',
+    extras: 'Conversor Interactivo Bidireccional capaz de transformar cualquier fichero existente de un formato X a un formato Y sin pérdida de datos.',
+    justificacionExtras: 'Demuestra el dominio completo de la teoría de ficheros: extraer los datos estructurados en memoria de un formato y reescribirlos bajo las especificaciones de otro formato totalmente distinto.',
+    
+    codeTitle: 'Escritura Binaria Nativa en Java',
     code: `public byte[] guardarBinario(Envio e) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     DataOutputStream dos = new DataOutputStream(baos);
@@ -78,12 +92,16 @@ public class FileController {
     icon: '🗄️',
     color: '#fbbf24',
     gradient: 'linear-gradient(135deg, rgba(251,191,36,0.2), rgba(217,119,6,0.05))',
-    title: 'Base de Datos & ORM',
-    sub: 'Persistencia Relacional (H2 / JPA)',
+    title: 'Base de Datos & ORM (H2 / JPA)',
+    sub: 'Persistencia Relacional en BD',
     tech: ['Spring Data JPA', 'Hibernate ORM', 'H2 Database', 'PostgreSQL'],
-    summary: 'Mapeo Objeto-Relacional para almacenamiento en BD.',
-    description: 'Mapea la entidad Java Envio.java directamente a la tabla ENVIOS de la Base de Datos H2. Permite persistir envíos con ID autonumérico e inspeccionar la BD desde /h2-console.',
-    codeTitle: 'Entidad JPA con Hibernate',
+    
+    requisito: 'Implementar almacenamiento persistente en Base de Datos Relacional para mantener un historial de envíos registrados.',
+    justificacion: 'Se utilizó Spring Data JPA con Hibernate ORM. Evita escribir SQL manual propenso a errores (SQL Injection) al mapear la clase Java @Entity Envio a la tabla relacional ENVIOS. Se configuró H2 en memoria (jdbc:h2:mem:enviosdb) para permitir ejecución 100% libre de instalaciones.',
+    extras: 'Acceso directo a la Consola Web de H2 en /h2-console para auditar físicamente la tabla SQL, e integración directa para inspeccionar registros de la BD en el Visor Web.',
+    justificacionExtras: 'Permite al docente/evaluador comprobar físicamente que las filas SQL existen en la tabla relacional durante la defensa del proyecto.',
+    
+    codeTitle: 'Mapeo Objeto-Relacional con JPA',
     code: `@Entity
 @Table(name = "envios")
 public class Envio {
@@ -100,17 +118,23 @@ public class Envio {
     icon: '☁️',
     color: '#f87171',
     gradient: 'linear-gradient(135deg, rgba(248,113,113,0.2), rgba(220,38,38,0.05))',
-    title: 'DevOps & Cloud',
-    sub: 'Contenerización Docker + Render + Vercel',
+    title: 'DevOps & Contenerización Cloud',
+    sub: 'Docker + Render.com + Vercel.com',
     tech: ['Docker Multi-Stage', 'Render.com', 'Vercel.com', 'Git / GitHub'],
-    summary: 'Infraestructura full-stack desplegada en producción.',
-    description: 'El backend Java corre empaquetado en un contenedor Docker en Render.com, mientras que el frontend React se despliega en Vercel con integración continua.',
+    
+    requisito: 'Desplegar la solución Full-Stack de forma pública y accesible en la nube.',
+    justificacion: 'Se implementó un Dockerfile Multi-Stage (Stage 1: Maven + JDK 21 para compilar / Stage 2: JRE 21 para ejecutar). Esto garantiza que el servidor Java corra en un contenedor aislado idéntico en cualquier plataforma. Se alojó el backend en Render.com y el frontend en Vercel.com.',
+    extras: 'Integración CI/CD conectada a GitHub: cualquier cambio en el repositorio se recompila y despliega automáticamente en producción en menos de 60 segundos.',
+    justificacionExtras: 'Aporta nivel profesional al proyecto, eliminando el problema de "en mi ordenador sí funciona" y permitiendo presentar una URL pública en vivo.',
+    
     codeTitle: 'Dockerfile Multi-Stage (Java 21)',
-    code: `FROM maven:3.9.6-eclipse-temurin-21 AS build
+    code: `# Stage 1: Compilación de Maven
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
+# Stage 2: Imagen final ligera de ejecución
 FROM eclipse-temurin:21-jre
 COPY --from=build /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]`,
@@ -121,16 +145,21 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`,
     icon: '🛡️',
     color: '#60a5fa',
     gradient: 'linear-gradient(135deg, rgba(96,165,250,0.2), rgba(37,99,235,0.05))',
-    title: 'Arquitectura Híbrida',
-    sub: 'Tolerancia a Fallos & Motor Cliente JS',
+    title: 'Arquitectura Híbrida & Resiliencia',
+    sub: 'Tolerancia a Fallos & Modo Cliente JS',
     tech: ['DataView JS', 'TextDecoder', 'DOMParser', 'LocalStorage'],
-    summary: 'Garantiza disponibilidad 100% incluso en servidores suspendidos.',
-    description: 'Si el servidor Java de Render tarda en despertar, el navegador conmuta automáticamente al motor cliente JS que decodifica binarios con DataView y guarda en localStorage.',
-    codeTitle: 'Decodificador Binario en Cliente JS',
+    
+    requisito: 'Garantizar que la aplicación no sufra cuelgues ni errores de disponibilidad durante su uso.',
+    justificacion: 'Los servidores gratuitos en la nube (como Render) entran en modo de reposo (sleep) tras minutos de inactividad. Para evitar que el usuario perciba lentitud o errores de conexión, el frontend incluye un motor espejo en JavaScript.',
+    extras: 'Decodificador/Codificador binario DataView en JS compatible con la especificación de bytes de Java DataOutputStream, parser XML cliente con DOMParser y base de datos local en localStorage.',
+    justificacionExtras: 'Demuestra una arquitectura de grado de producción con tolerancia total a fallos: La web es 100% funcional incluso sin conexión a internet o con el servidor en reposo.',
+    
+    codeTitle: 'Decodificador Binario en JS (DataView)',
     code: `const view = new DataView(buffer);
 const readUTF = () => {
-  const len = view.getUint16(offset, false);
-  const bytes = new Uint8Array(buffer, offset + 2, len);
+  const len = view.getUint16(offset.value, false);
+  const bytes = new Uint8Array(buffer, offset.value + 2, len);
+  offset.value += 2 + len;
   return new TextDecoder().decode(bytes);
 };`,
   },
@@ -145,16 +174,16 @@ export default function PresentacionPage({ onVolver }) {
       {/* Cabecera Superior con Botón de Volver */}
       <header className="pres-page-header">
         <button className="btn btn-ghost pres-back-btn" onClick={onVolver}>
-          ⬅️ Volver a la Aplicación
+          ⬅️ Volver al Sistema de Envíos
         </button>
         <div className="pres-page-title">
           <span className="badge">UT02 · Acceso a Datos</span>
-          <h1>Arquitectura del Sistema Full-Stack</h1>
-          <p>Explora cada uno de los 6 bloques tecnológicos que forman el todo de esta aplicación</p>
+          <h1>Justificación Académica & Arquitectura</h1>
+          <p>Defensa detallada del proyecto: Requisitos exigidos, justificaciones técnicas y extras de valor pedagógico</p>
         </div>
       </header>
 
-      {/* Grid de Tarjetas 3D por Bloques */}
+      {/* Grid de Tarjetas Cubo 3D */}
       <div className="cube-cards-grid">
         {BLOQUES_ARQUITECTURA.map((bloque) => {
           const isSelected = selectedBlock.id === bloque.id;
@@ -176,8 +205,6 @@ export default function PresentacionPage({ onVolver }) {
               <h3 className="cube-title">{bloque.title}</h3>
               <p className="cube-sub">{bloque.sub}</p>
 
-              <p className="cube-summary">{bloque.summary}</p>
-
               <div className="cube-tech-tags">
                 {bloque.tech.slice(0, 3).map((t, i) => (
                   <span key={i} className="cube-tag">⚡ {t}</span>
@@ -185,49 +212,69 @@ export default function PresentacionPage({ onVolver }) {
               </div>
 
               <div className="cube-card-footer">
-                <span>{isSelected ? '✓ Seleccionado' : '👆 Clic para inspeccionar'}</span>
+                <span>{isSelected ? '✓ Seleccionado para defensa' : '👆 Clic para justificar'}</span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Panel Detallado del Bloque Seleccionado */}
+      {/* Panel de Justificación Detallada del Bloque Seleccionado */}
       <div className="pres-detail-panel" style={{ borderColor: `${selectedBlock.color}60` }}>
+        
+        {/* Cabecera del Bloque */}
         <div className="detail-panel-header">
           <div className="detail-icon-box" style={{ background: `${selectedBlock.color}20`, borderColor: `${selectedBlock.color}50` }}>
             <span>{selectedBlock.icon}</span>
           </div>
           <div>
             <span className="detail-number-badge" style={{ color: selectedBlock.color, borderColor: `${selectedBlock.color}40`, background: `${selectedBlock.color}15` }}>
-              Bloque {selectedBlock.numero}
+              Bloque {selectedBlock.numero} · Defensa Técnica
             </span>
             <h2 className="detail-title">{selectedBlock.title}</h2>
             <p className="detail-sub">{selectedBlock.sub}</p>
           </div>
         </div>
 
-        <p className="detail-description">{selectedBlock.description}</p>
+        {/* 1. Requisito Exigido del Proyecto */}
+        <div className="justification-box requirement-box">
+          <div className="box-tag">🎯 Requisito Exigido del Proyecto</div>
+          <p>{selectedBlock.requisito}</p>
+        </div>
 
-        {/* Si tiene formatos desglosados (Bloque 3) */}
-        {selectedBlock.formats && (
-          <div className="detail-formats-grid">
-            {selectedBlock.formats.map((fmt, idx) => (
-              <div key={idx} className="detail-format-item">
-                <strong>{fmt.name}</strong>
-                <p>{fmt.desc}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* 2. Justificación Técnica de la Solución */}
+        <div className="justification-box tech-box">
+          <div className="box-tag">🔬 Justificación Técnica de la Solución</div>
+          <p>{selectedBlock.justificacion}</p>
+          
+          {/* Sub-items en caso de Ficheros (Bloque 3) */}
+          {selectedBlock.subItems && (
+            <div className="detail-formats-grid" style={{ marginTop: '0.8rem' }}>
+              {selectedBlock.subItems.map((fmt, idx) => (
+                <div key={idx} className="detail-format-item">
+                  <strong>{fmt.name}</strong>
+                  <p>{fmt.desc}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Visor de Código del Bloque */}
+        {/* 3. Extras y Mejoras Añadidas + 4. Justificación del Valor Pedagógico */}
+        <div className="justification-box extras-box">
+          <div className="box-tag">🚀 Extras Añadidos & Justificación de Valor</div>
+          <p><strong>Mejoras implementadas:</strong> {selectedBlock.extras}</p>
+          <p style={{ marginTop: '0.5rem' }}><strong>Justificación pedagógica:</strong> {selectedBlock.justificacionExtras}</p>
+        </div>
+
+        {/* Visor de Código Representativo del Bloque */}
         <div className="detail-code-container">
           <div className="detail-code-bar">
-            <span>💻 {selectedBlock.codeTitle}</span>
+            <span>💻 Código Representativo del Bloque — {selectedBlock.codeTitle}</span>
           </div>
           <pre><code>{selectedBlock.code}</code></pre>
         </div>
+
       </div>
 
     </div>

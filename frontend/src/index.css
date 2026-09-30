@@ -2164,6 +2164,62 @@ tbody td {
   line-height: 1.5;
 }
 
+/* Cajas de Justificación Académica */
+.justification-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.box-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  margin-bottom: 0.2rem;
+}
+
+/* 1. Requisito */
+.requirement-box {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(167, 139, 250, 0.05);
+}
+.requirement-box .box-tag {
+  background: rgba(167, 139, 250, 0.2);
+  color: var(--accent-secondary);
+}
+
+/* 2. Justificación Técnica */
+.tech-box {
+  border-color: rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.05);
+}
+.tech-box .box-tag {
+  background: rgba(34, 211, 238, 0.2);
+  color: var(--accent-cyan);
+}
+
+/* 3. Extras y Mejoras */
+.extras-box {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.05);
+}
+.extras-box .box-tag {
+  background: rgba(52, 211, 153, 0.2);
+  color: var(--accent-green);
+}
+
+
 
 
 
