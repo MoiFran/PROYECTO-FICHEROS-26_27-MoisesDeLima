@@ -3,11 +3,13 @@ import Workspace from './components/Workspace';
 import ConversorFicheros from './components/ConversorFicheros';
 import VisorWebFicheros from './components/VisorWebFicheros';
 import HistorialTable from './components/HistorialTable';
+import ModalPresentacion from './components/ModalPresentacion';
 import { getEnvios } from './api';
 
 export default function App() {
-  const [historial, setHistorial] = useState([]);
-  const [toasts, setToasts]       = useState([]);
+  const [historial, setHistorial]               = useState([]);
+  const [toasts, setToasts]                     = useState([]);
+  const [showPresentacion, setShowPresentacion] = useState(false);
 
   const addToast = useCallback((msg, type = 'info') => {
     const id = Date.now();
@@ -23,6 +25,17 @@ export default function App() {
 
   return (
     <>
+      {/* Botón flotante superior izquierdo de Acceso a la Presentación */}
+      <button
+        id="btn-floating-presentacion"
+        className="btn-floating-pres"
+        onClick={() => setShowPresentacion(true)}
+        title="Ver la presentación de arquitectura del proyecto"
+      >
+        <span className="pres-btn-icon">🎓</span>
+        <span className="pres-btn-text">Acceso a la Presentación</span>
+      </button>
+
       <div className="app-wrapper">
         <header className="app-header">
           <div className="badge">UT02 · Acceso a Datos</div>
@@ -42,6 +55,11 @@ export default function App() {
         {/* Bloque 4: Historial y Persistencia en Base de Datos */}
         <HistorialTable envios={historial} onRefresh={fetchHistorial} onToast={addToast} />
       </div>
+
+      {/* Modal de Presentación de Arquitectura */}
+      {showPresentacion && (
+        <ModalPresentacion onCerrar={() => setShowPresentacion(false)} />
+      )}
 
       {/* Notificaciones flotantes (Toasts) */}
       <div className="toast-container">
