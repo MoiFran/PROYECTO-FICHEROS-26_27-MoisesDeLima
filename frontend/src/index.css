@@ -1552,18 +1552,43 @@ tbody td {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 1.1rem;
+  padding: 0.65rem 1.2rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.25), rgba(108, 99, 255, 0.35));
-  border: 1px solid rgba(167, 139, 250, 0.5);
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.3), rgba(108, 99, 255, 0.45));
+  border: 1px solid rgba(167, 139, 250, 0.6);
   color: var(--text-primary);
   font-size: 0.85rem;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   cursor: pointer;
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
   transition: var(--transition);
+  animation: vibratePulse 3s infinite ease-in-out;
+}
+
+@keyframes vibratePulse {
+  0%, 75%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
+  }
+  78% {
+    transform: translateY(-4px) rotate(-4deg) scale(1.06);
+    box-shadow: 0 8px 30px rgba(167, 139, 250, 0.7);
+  }
+  82% {
+    transform: translateY(3px) rotate(4deg) scale(1.06);
+    box-shadow: 0 8px 30px rgba(34, 211, 238, 0.7);
+  }
+  86% {
+    transform: translateY(-2px) rotate(-3deg) scale(1.04);
+  }
+  90% {
+    transform: translateY(1px) rotate(2deg) scale(1.02);
+  }
+  94% {
+    transform: translateY(0) rotate(-1deg) scale(1.01);
+  }
 }
 
 .btn-floating-pres:hover {
