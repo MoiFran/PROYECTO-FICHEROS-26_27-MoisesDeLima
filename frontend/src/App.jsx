@@ -3,13 +3,13 @@ import Workspace from './components/Workspace';
 import ConversorFicheros from './components/ConversorFicheros';
 import VisorWebFicheros from './components/VisorWebFicheros';
 import HistorialTable from './components/HistorialTable';
-import ModalPresentacion from './components/ModalPresentacion';
+import PresentacionPage from './components/PresentacionPage';
 import { getEnvios } from './api';
 
 export default function App() {
-  const [historial, setHistorial]               = useState([]);
-  const [toasts, setToasts]                     = useState([]);
-  const [showPresentacion, setShowPresentacion] = useState(false);
+  const [vista, setVista]         = useState('app'); // 'app' | 'presentacion'
+  const [historial, setHistorial] = useState([]);
+  const [toasts, setToasts]       = useState([]);
 
   const addToast = useCallback((msg, type = 'info') => {
     const id = Date.now();
@@ -23,14 +23,19 @@ export default function App() {
 
   useEffect(() => { fetchHistorial(); }, [fetchHistorial]);
 
+  // Si estamos en la ruta de presentación
+  if (vista === 'presentacion') {
+    return <PresentacionPage onVolver={() => setVista('app')} />;
+  }
+
   return (
     <>
-      {/* Botón flotante superior izquierdo de Acceso a la Presentación */}
+      {/* Botón flotante superior izquierdo para ir a la Ruta de Presentación */}
       <button
         id="btn-floating-presentacion"
         className="btn-floating-pres"
-        onClick={() => setShowPresentacion(true)}
-        title="Ver la presentación de arquitectura del proyecto"
+        onClick={() => setVista('presentacion')}
+        title="Ir a la ruta de presentación del proyecto por cubos"
       >
         <span className="pres-btn-icon">🎓</span>
         <span className="pres-btn-text">Acceso a la Presentación</span>
@@ -55,11 +60,6 @@ export default function App() {
         {/* Bloque 4: Historial y Persistencia en Base de Datos */}
         <HistorialTable envios={historial} onRefresh={fetchHistorial} onToast={addToast} />
       </div>
-
-      {/* Modal de Presentación de Arquitectura */}
-      {showPresentacion && (
-        <ModalPresentacion onCerrar={() => setShowPresentacion(false)} />
-      )}
 
       {/* Notificaciones flotantes (Toasts) */}
       <div className="toast-container">
