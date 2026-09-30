@@ -117,30 +117,75 @@ function createProjectPDF(outputPath) {
   y += 10;
   doc.fillColor(PRIMARY).fontSize(12).font('Helvetica-Bold').text('4. ARQUITECTURA TECNICA Y DEVOPS', 40, y);
 
+  y += 18;
+  doc.rect(40, y, 515.28, 95).fillAndStroke('#f0fdf4', '#bbf7d0');
+
+  doc.fillColor('#15803d').fontSize(9).font('Helvetica-Bold');
+  doc.text('[FRONTEND] React (Vercel):', 55, y + 10);
+  doc.fillColor(DARK).fontSize(8).font('Helvetica').text('React 19, Vite, CSS Vanilla, Glassmorphism, Toasts flotantes reactivos y SPA Routing.', 200, y + 10);
+
+  doc.fillColor('#15803d').fontSize(9).font('Helvetica-Bold').text('[BACKEND] Java (Render):', 55, y + 28);
+  doc.fillColor(DARK).fontSize(8).font('Helvetica').text('Java 21, Spring Boot 3, Spring Web, Maven, Docker Multi-Stage (Dockerfile).', 200, y + 28);
+
+  doc.fillColor('#15803d').fontSize(9).font('Helvetica-Bold').text('[DATABASE] Base de Datos:', 55, y + 46);
+  doc.fillColor(DARK).fontSize(8).font('Helvetica').text('Spring Data JPA, Hibernate ORM, H2 Database (In-Memory) / Neon PostgreSQL.', 200, y + 46);
+
+  doc.fillColor('#15803d').fontSize(9).font('Helvetica-Bold').text('[RESILIENCE] Resiliencia Hibrida:', 55, y + 64);
+  doc.fillColor(DARK).fontSize(8).font('Helvetica').text('Motor cliente JS (DataView, TextDecoder, localStorage) para disponibilidad 100% sin cuelgues.', 200, y + 64);
+
+  // Section 5: Explicación de Paquetes y Librerías Usadas
+  y += 115;
+  doc.fillColor(PRIMARY).fontSize(12).font('Helvetica-Bold').text('5. INVENTARIO DE PAQUETES Y LIBRERIAS UTILIZADAS', 40, y);
+
+  y += 18;
+  const paquetes = [
+    { name: 'spring-boot-starter-web', env: 'Backend Java', desc: 'Framework Spring MVC, servidor Tomcat embebido, anotaciones REST (@RestController) y mapeo JSON.' },
+    { name: 'spring-boot-starter-data-jpa', env: 'Backend Java', desc: 'Abstraccion ORM con Hibernate. Mapea la entidad Java Envio a SQL y gestiona transacciones con JpaRepository.' },
+    { name: 'com.h2database:h2', env: 'Backend Java', desc: 'Motor de Base de Datos relacional en memoria (jdbc:h2:mem:enviosdb) con consola interactiva /h2-console.' },
+    { name: 'jackson-dataformat-xml', env: 'Backend Java', desc: 'Extension de Jackson para serializar/deserializar objetos Java directamente a XML (<envio>...</envio>).' },
+    { name: 'react & react-dom (v19)', env: 'Frontend Web', desc: 'Biblioteca UI reactiva basada en Hooks (useState, useEffect, useMemo) para renderizado reactivo instantaneo.' },
+    { name: 'vite & lucide-react', env: 'Frontend Web', desc: 'Bundler de ultima generacion con Native ES Modules e iconografia vectorial en SVG para la interfaz.' },
+    { name: 'pdfkit & canvas-confetti', env: 'Tooling & UI', desc: 'Generacion programatica de esta memoria oficial PDF y animacion visual de celebracion en el cliente.' },
+  ];
+
+  paquetes.forEach((pkg) => {
+    doc.rect(40, y, 515.28, 28).fillAndStroke('#f8fafc', '#e2e8f0');
+    doc.fillColor(PRIMARY).fontSize(8.5).font('Helvetica-Bold').text(`${pkg.name} (${pkg.env})`, 48, y + 4);
+    doc.fillColor(DARK).fontSize(7.5).font('Helvetica').text(pkg.desc, 48, y + 15, { width: 498 });
+    y += 31;
+  });
+
+  // Page Break for Section 6 & Signoff
+  doc.addPage();
+  addHeader();
+
+  // Section 6: Guía de Uso Paso a Paso para Evaluación
+  y = 105;
+  doc.fillColor(PRIMARY).fontSize(12).font('Helvetica-Bold').text('6. GUIA DE USO PASO A PASO PARA EVALUACION DEL PROFESOR', 40, y);
+
   y += 20;
-  doc.rect(40, y, 515.28, 115).fillAndStroke('#f0fdf4', '#bbf7d0');
+  const pasos = [
+    { paso: 'Paso 1: Acceso Web', detail: 'Abrir https://proyecto-ficheros-26-27-moises-de-l.vercel.app/. Si el backend Render esta en reposo, la app conmuta al motor local JS DataView sin cuelgues.' },
+    { paso: 'Paso 2: Creacion de Envio (Bloque 1)', detail: 'Rellenar formulario. Pulsar "Guardar en Fichero" para descargar (.dat, .xml, .csv, .json) o "Guardar en BD" para almacenar en H2 via JPA.' },
+    { paso: 'Paso 3: Conversor de Formatos (Bloque 2)', detail: 'Pegar un fichero existente, elegir formato origen y formato destino (ej: CSV -> XML) y pulsar "Convertir Fichero".' },
+    { paso: 'Paso 4: Inspeccion en Visor Web IDE (Bloque 3)', detail: 'Abrir "Visor Web" para examinar el codigo crudo con numeros de linea y sintaxis resaltada de cualquier archivo.' },
+    { paso: 'Paso 5: Consulta e Historial BD (Bloque 4)', detail: 'Revisar la tabla SQL en "Historial en BD" y pulsar "Ver en Visor" en cualquier registro para cargarlo directamente en el visor de codigo.' },
+    { paso: 'Paso 6: Defensa en Cubo 3D (/presentacion)', detail: 'Pulsar el boton flotante animado (esquina sup. izquierda) para abrir la defensa en cubo 3D con explicaciones de codigo y justificaciones.' },
+    { paso: 'Paso 7: Memoria PDF Oficial', detail: 'Adjuntar esta memoria PDF (Proyecto_UT02_AccesoADatos_MoisesDeLima.pdf) en la entrega del Campus Virtual.' },
+  ];
 
-  doc.fillColor('#15803d').fontSize(9.5).font('Helvetica-Bold');
-  doc.text('[FRONTEND] React (Vercel):', 55, y + 12);
-  doc.fillColor(DARK).fontSize(8.5).font('Helvetica').text('React 19, Vite, CSS Vanilla, Glassmorphism, Toasts flotantes reactivos y SPA Routing.', 200, y + 12);
-
-  doc.fillColor('#15803d').fontSize(9.5).font('Helvetica-Bold').text('[BACKEND] Java (Render):', 55, y + 32);
-  doc.fillColor(DARK).fontSize(8.5).font('Helvetica').text('Java 21, Spring Boot 3, Spring Web, Maven, Docker Multi-Stage (Dockerfile).', 200, y + 32);
-
-  doc.fillColor('#15803d').fontSize(9.5).font('Helvetica-Bold').text('[DATABASE] Base de Datos:', 55, y + 52);
-  doc.fillColor(DARK).fontSize(8.5).font('Helvetica').text('Spring Data JPA, Hibernate ORM, H2 Database (In-Memory) / Neon PostgreSQL.', 200, y + 52);
-
-  doc.fillColor('#15803d').fontSize(9.5).font('Helvetica-Bold').text('[RESILIENCE] Resiliencia Hibrida:', 55, y + 72);
-  doc.fillColor(DARK).fontSize(8.5).font('Helvetica').text('Motor cliente JS (DataView, TextDecoder, localStorage) para disponibilidad 100% sin cuelgues.', 200, y + 72);
-
-  doc.fillColor('#15803d').fontSize(9.5).font('Helvetica-Bold').text('[DEVOPS] Integracion CI/CD:', 55, y + 92);
-  doc.fillColor(DARK).fontSize(8.5).font('Helvetica').text('Despliegue automatico en la nube en cada commit al repositorio GitHub.', 200, y + 92);
+  pasos.forEach((p) => {
+    doc.rect(40, y, 515.28, 36).fillAndStroke('#eff6ff', '#bfdbfe');
+    doc.fillColor('#1e40af').fontSize(9).font('Helvetica-Bold').text(p.paso, 50, y + 5);
+    doc.fillColor(DARK).fontSize(8).font('Helvetica').text(p.detail, 50, y + 18, { width: 495 });
+    y += 40;
+  });
 
   // Footer Signoff
-  y += 135;
-  doc.rect(40, y, 515.28, 45).fillAndStroke('#1e1b4b', '#1e1b4b');
-  doc.fillColor('#ffffff').fontSize(10).font('Helvetica-Bold').text('Firma y Entrega del Alumno:', 55, y + 10);
-  doc.fillColor('#a78bfa').fontSize(9).font('Helvetica').text('Moises De Lima - DAM Noche Grupo A - Proyecto UT02 Acceso a Datos', 55, y + 26);
+  y += 15;
+  doc.rect(40, y, 515.28, 50).fillAndStroke('#1e1b4b', '#1e1b4b');
+  doc.fillColor('#ffffff').fontSize(10.5).font('Helvetica-Bold').text('Firma y Entrega Oficial del Alumno:', 55, y + 12);
+  doc.fillColor('#a78bfa').fontSize(9.5).font('Helvetica').text('Moises De Lima - DAM Noche Grupo A - Proyecto UT02 Acceso a Datos (2026-2027)', 55, y + 29);
 
   doc.end();
 
@@ -149,9 +194,19 @@ function createProjectPDF(outputPath) {
   });
 }
 
+function generateSafe(outputPath) {
+  try {
+    createProjectPDF(outputPath);
+  } catch (err) {
+    console.warn('Advertencia al escribir PDF en:', outputPath, err.message);
+  }
+}
+
 // Generate in both root and frontend/public
 const rootPath = path.join(__dirname, '..', 'Proyecto_UT02_AccesoADatos_MoisesDeLima.pdf');
 const publicPath = path.join(__dirname, 'public', 'Proyecto_UT02_AccesoADatos_MoisesDeLima.pdf');
 
-createProjectPDF(rootPath);
-createProjectPDF(publicPath);
+generateSafe(publicPath);
+generateSafe(rootPath);
+
+
