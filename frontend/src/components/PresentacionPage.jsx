@@ -16,15 +16,34 @@ const BLOQUES_ARQUITECTURA = [
     extras: 'Visor Web de archivos estilo editor IDE con números de línea y resaltado, modales interactivos de confirmación previa a la descarga, y sistema flotante de avisos Toasts.',
     justificacionExtras: 'Permite al estudiante/profesor examinar físicamente la estructura cruda del código de cada archivo (JSON, XML, CSV, Binario) desde la propia web sin necesidad de instalar o abrir programas externos como Bloc de Notas o Excel.',
     
-    codeTitle: 'Consumo de API REST desde React',
-    code: `// Petición asíncrona desde el cliente React al backend Spring Boot
-export const guardarFichero = async (envio, formato, nombre) => {
-  const res = await fetch(\`/api/files/guardar/\${formato}?nombreFichero=\${nombre}\`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(envio),
-  });
-  return res.blob();
+    fileName: 'api.js (Comunicación Cliente -> Backend)',
+    code: `// ── Capa API del Frontend en React ──────────────────────────────
+// 1. Petición POST asíncrona para guardar y descargar ficheros
+export const guardarFichero = async (envio, formato, nombreFichero) => {
+  // 2. Conecta con el endpoint del Backend Java Spring Boot
+  const res = await fetch(
+    \`\${API_BASE}/files/guardar/\${formato}?nombreFichero=\${encodeURIComponent(nombreFichero)}\`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(envio), // Enviamos el objeto Envio formateado como JSON
+    }
+  );
+
+  // 3. Convertimos la respuesta binaria devuelta por Java en un Blob de navegador
+  const blob = await res.blob();
+  const filename = nombreFichero + '.' + formato;
+
+  // 4. Creamos un enlace HTML5 dinámico en memoria para forzar la descarga en el equipo
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click(); // Dispara la descarga automática en el navegador
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url); // Liberamos la memoria del Blob
+  return filename;
 };`,
   },
   {
@@ -42,16 +61,57 @@ export const guardarFichero = async (envio, formato, nombre) => {
     extras: 'Endpoints Multipart (/api/files/abrir) para recibir archivos físicos subidos por el usuario, parsearlos dinámicamente y devolver el modelo JSON; y respuestas ResponseEntity<byte[]> con cabeceras de descarga directa.',
     justificacionExtras: 'Transforma el backend en una API verdaderamente reusable y decoupled que puede ser consumida por cualquier cliente (Web, Móvil, Postman o comandos cURL).',
     
-    codeTitle: 'Spring Boot REST Controller',
-    code: `@RestController
+    fileName: 'FileController.java (Controlador REST de Ficheros)',
+    code: `package ut02.controller;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ut02.model.Envio;
+import ut02.service.FileService;
+
+// 1. @RestController expone esta clase como controlador de peticiones HTTP API REST
+@RestController
 @RequestMapping("/api/files")
 public class FileController {
+
+    private final FileService fileService;
+
+    // 2. Inyección de dependencias por constructor del servicio FileService
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
+
+    // 3. Endpoint POST para generar y descargar ficheros (.dat, .xml, .csv, .json)
     @PostMapping("/guardar/{formato}")
-    public ResponseEntity<byte[]> guardar(@PathVariable String formato, @RequestBody Envio envio) {
-        byte[] bytes = fileService.guardarSegunFormato(envio, formato);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=envio." + formato)
-                .body(bytes);
+    public ResponseEntity<byte[]> guardar(
+            @PathVariable String formato,         // Formato recibido en la URL (ej: "xml")
+            @RequestParam String nombreFichero,   // Nombre deseado para el archivo
+            @RequestBody Envio envio) {            // Objeto JSON mapeado a Java Envio
+
+        try {
+            // 4. Delegamos en el servicio la generación de bytes según el formato
+            byte[] contenido = switch (formato.toLowerCase()) {
+                case "dat"  -> fileService.guardarBinario(envio); // Genera bytes binarios Java
+                case "xml"  -> fileService.guardarXML(envio);     // Genera estructura XML
+                case "csv"  -> fileService.guardarCSV(envio);     // Genera líneas CSV
+                case "json" -> fileService.guardarJSON(envio);    // Genera JSON con Jackson
+                default     -> null;
+            };
+
+            if (contenido == null) return ResponseEntity.badRequest().build();
+
+            // 5. Devolvemos la respuesta HTTP 200 OK con los bytes y la cabecera de descarga
+            String filename = nombreFichero + "." + formato;
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\\"" + filename + "\\"")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(contenido);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }`,
   },
@@ -66,7 +126,7 @@ public class FileController {
     tech: ['DataOutputStream', 'Jackson JSON', 'DOM / XML', 'CSV Builder'],
     
     requisito: 'El núcleo obligatorio de la UT02: Implementar la lectura, escritura y manipulación de archivos en 4 formatos: Binario (.dat), XML (.xml), CSV (.csv) y JSON (.json).',
-    justificacion: 'Se desarrollaron 4 parsers/generadores específicos en Java:',
+    justificacion: 'Se desarrollaron 4 parsers/generadores específicos en Java dentro del servicio FileService:',
     subItems: [
       { name: '📦 Binario (.dat)', desc: 'Utiliza DataOutputStream y DataInputStream para escribir/leer tipos de datos primitivos en secuencias de bytes continuas. Es el formato de menor espacio en disco pero requiere un programa específico.' },
       { name: '📄 XML (.xml)', desc: 'Utiliza estructuras de etiquetas jerárquicas con apertura y cierre (<envio><destino>...</destino></envio>). Estándar de interoperabilidad enterprise.' },
@@ -76,14 +136,53 @@ public class FileController {
     extras: 'Conversor Interactivo Bidireccional capaz de transformar cualquier fichero existente de un formato X a un formato Y sin pérdida de datos.',
     justificacionExtras: 'Demuestra el dominio completo de la teoría de ficheros: extraer los datos estructurados en memoria de un formato y reescribirlos bajo las especificaciones de otro formato totalmente distinto.',
     
-    codeTitle: 'Escritura Binaria Nativa en Java',
-    code: `public byte[] guardarBinario(Envio e) throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    DataOutputStream dos = new DataOutputStream(baos);
-    dos.writeUTF(e.getNumeroCliente());
-    dos.writeDouble(e.getPeso());
-    dos.flush();
-    return baos.toByteArray();
+    fileName: 'FileService.java (Lectura y Escritura de Binario Java)',
+    code: `package ut02.service;
+
+import org.springframework.stereotype.Service;
+import ut02.model.Envio;
+import java.io.*;
+
+@Service
+public class FileService {
+
+    // ── 1. ESCRITURA EN BINARIO (.DAT) ─────────────────────────────────
+    // Escribe los atributos del objeto Envio como flujo de bytes primitivos
+    public byte[] guardarBinario(Envio envio) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+
+        // writeUTF escribe cadenas de texto con longitud previa de 2 bytes
+        dos.writeUTF(envio.getNumeroCliente() != null ? envio.getNumeroCliente() : "");
+        dos.writeUTF(envio.getNumeroSeguimiento() != null ? envio.getNumeroSeguimiento() : "");
+        dos.writeUTF(envio.getDestino() != null ? envio.getDestino() : "");
+        
+        // writeDouble escribe números flotantes de 64 bits (8 bytes IEEE 754)
+        dos.writeDouble(envio.getPeso() != null ? envio.getPeso() : 0.0);
+        
+        dos.writeUTF(envio.getFechaEnvio() != null ? envio.getFechaEnvio() : "");
+        dos.writeUTF(envio.getFechaEstimadaEntrega() != null ? envio.getFechaEstimadaEntrega() : "");
+
+        dos.flush();
+        return baos.toByteArray(); // Retorna los bytes binarios generados
+    }
+
+    // ── 2. LECTURA Y RECONSTRUCCIÓN DESDE BINARIO (.DAT) ───────────────
+    public Envio abrirBinario(byte[] bytes) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        DataInputStream dis = new DataInputStream(bais);
+
+        Envio envio = new Envio();
+        // Leemos en el MISMO orden exacto en el que escribimos los bytes
+        envio.setNumeroCliente(dis.readUTF());
+        envio.setNumeroSeguimiento(dis.readUTF());
+        envio.setDestino(dis.readUTF());
+        envio.setPeso(dis.readDouble());
+        envio.setFechaEnvio(dis.readUTF());
+        envio.setFechaEstimadaEntrega(dis.readUTF());
+
+        return envio; // Objeto Java Envio 100% reconstruido
+    }
 }`,
   },
   {
@@ -101,15 +200,35 @@ public class FileController {
     extras: 'Acceso directo a la Consola Web de H2 en /h2-console para auditar físicamente la tabla SQL, e integración directa para inspeccionar registros de la BD en el Visor Web.',
     justificacionExtras: 'Permite al docente/evaluador comprobar físicamente que las filas SQL existen en la tabla relacional durante la defensa del proyecto.',
     
-    codeTitle: 'Mapeo Objeto-Relacional con JPA',
-    code: `@Entity
+    fileName: 'Envio.java (Entidad Mapeada con JPA / Hibernate)',
+    code: `package ut02.model;
+
+import jakarta.persistence.*;
+
+// 1. @Entity le indica a Hibernate que esta clase se mapea a una tabla SQL
+@Entity
 @Table(name = "envios")
 public class Envio {
+
+    // 2. @Id y @GeneratedValue definen la Clave Primaria Autonumérica de la tabla
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // 3. Atributos del envío mapeados a columnas SQL de la tabla
+    @Column(name = "numero_cliente", nullable = false)
     private String numeroCliente;
+
+    private String numeroSeguimiento;
+    private String destino;
     private Double peso;
+    private String fechaEnvio;
+    private String fechaEstimadaEntrega;
+
+    // Constructor vacío exigido por la especificación de JPA
+    public Envio() {}
+
+    // Getters y Setters...
 }`,
   },
   {
@@ -127,16 +246,29 @@ public class Envio {
     extras: 'Integración CI/CD conectada a GitHub: cualquier cambio en el repositorio se recompila y despliega automáticamente en producción en menos de 60 segundos.',
     justificacionExtras: 'Aporta nivel profesional al proyecto, eliminando el problema de "en mi ordenador sí funciona" y permitiendo presentar una URL pública en vivo.',
     
-    codeTitle: 'Dockerfile Multi-Stage (Java 21)',
-    code: `# Stage 1: Compilación de Maven
+    fileName: 'Dockerfile (Construcción Multi-Stage de Producción)',
+    code: `# ── STAGE 1: Compilación del proyecto Java con Maven y OpenJDK 21 ──────
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY . .
+
+# 1. Copiamos el archivo pom.xml y el código fuente src
+COPY pom.xml .
+COPY src ./src
+
+# 2. Compilamos y empaquetamos el proyecto en un archivo ejecutable .jar
 RUN mvn clean package -DskipTests
 
-# Stage 2: Imagen final ligera de ejecución
+# ── STAGE 2: Imagen ligera de ejecución de producción (JRE 21) ──────────
 FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+# 3. Copiamos únicamente el archivo .jar generado en el Stage 1
 COPY --from=build /app/target/*.jar app.jar
+
+# 4. Exponemos el puerto del servidor (Render asigna $PORT automáticamente)
+EXPOSE 8080
+
+# 5. Comando de arranque de la aplicación Spring Boot
 ENTRYPOINT ["java", "-jar", "app.jar"]`,
   },
   {
@@ -146,7 +278,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`,
     color: '#60a5fa',
     gradient: 'linear-gradient(135deg, rgba(96,165,250,0.2), rgba(37,99,235,0.05))',
     title: 'Arquitectura Híbrida & Resiliencia',
-    sub: 'Tolerancia a Fallos & Modo Cliente JS',
+    sub: 'Tolerancia a Fallos & Motor Cliente JS',
     tech: ['DataView JS', 'TextDecoder', 'DOMParser', 'LocalStorage'],
     
     requisito: 'Garantizar que la aplicación no sufra cuelgues ni errores de disponibilidad durante su uso.',
@@ -154,19 +286,55 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`,
     extras: 'Decodificador/Codificador binario DataView en JS compatible con la especificación de bytes de Java DataOutputStream, parser XML cliente con DOMParser y base de datos local en localStorage.',
     justificacionExtras: 'Demuestra una arquitectura de grado de producción con tolerancia total a fallos: La web es 100% funcional incluso sin conexión a internet o con el servidor en reposo.',
     
-    codeTitle: 'Decodificador Binario en JS (DataView)',
-    code: `const view = new DataView(buffer);
-const readUTF = () => {
-  const len = view.getUint16(offset.value, false);
-  const bytes = new Uint8Array(buffer, offset.value + 2, len);
-  offset.value += 2 + len;
-  return new TextDecoder().decode(bytes);
-};`,
+    fileName: 'api.js (Decodificador Binario DataView en JS)',
+    code: `// ── DECODIFICADOR BINARIO CLIENTE EN JAVASCRIPT (DataView) ───────────
+// Replica de forma exacta el comportamiento de DataInputStream de Java en el navegador
+async function parsearBinarioCliente(file) {
+  const buffer = await file.arrayBuffer(); // Leemos los bytes del archivo en memoria
+  const view = new DataView(buffer);     // Creamos una vista DataView de 8-bit
+  const decoder = new TextDecoder();     // Decodificador de caracteres UTF-8
+  const offset = { value: 0 };
+
+  // 1. Helper para leer cadenas UTF-8 precedidas por su longitud de 2 bytes
+  const readUTF = () => {
+    const len = view.getUint16(offset.value, false); // Big endian (estándar Java)
+    offset.value += 2;
+    const bytes = new Uint8Array(buffer, offset.value, len);
+    offset.value += len;
+    return decoder.decode(bytes);
+  };
+
+  // 2. Helper para leer números flotantes de 64 bits (double de Java)
+  const readDouble = () => {
+    const val = view.getFloat64(offset.value, false);
+    offset.value += 8;
+    return val;
+  };
+
+  // 3. Reconstruimos el objeto JavaScript con los datos binarios extraídos
+  return {
+    numeroCliente: readUTF(),
+    numeroSeguimiento: readUTF(),
+    destino: readUTF(),
+    peso: readDouble(),
+    fechaEnvio: readUTF(),
+    fechaEstimadaEntrega: readUTF(),
+  };
+}`,
   },
 ];
 
 export default function PresentacionPage({ onVolver }) {
   const [selectedBlock, setSelectedBlock] = useState(BLOQUES_ARQUITECTURA[0]);
+  const [copiado, setCopiado]             = useState(false);
+
+  const handleCopiarCodigo = () => {
+    navigator.clipboard.writeText(selectedBlock.code);
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
+  };
+
+  const lineasCodigo = selectedBlock.code.split('\n');
 
   return (
     <div className="pres-page-wrapper">
@@ -267,12 +435,30 @@ export default function PresentacionPage({ onVolver }) {
           <p style={{ marginTop: '0.5rem' }}><strong>Justificación pedagógica:</strong> {selectedBlock.justificacionExtras}</p>
         </div>
 
-        {/* Visor de Código Representativo del Bloque */}
-        <div className="detail-code-container">
-          <div className="detail-code-bar">
-            <span>💻 Código Representativo del Bloque — {selectedBlock.codeTitle}</span>
+        {/* Visor IDE de Código Representativo Amplio y Claramente Legible */}
+        <div className="full-code-display-box">
+          <div className="code-display-header">
+            <div className="code-display-dots">
+              <span className="dot red" />
+              <span className="dot yellow" />
+              <span className="dot green" />
+              <span className="file-name">📄 {selectedBlock.fileName}</span>
+            </div>
+            <button className="btn btn-ghost btn-sm copy-code-btn" onClick={handleCopiarCodigo}>
+              {copiado ? '✅ ¡Copiado!' : '📋 Copiar código'}
+            </button>
           </div>
-          <pre><code>{selectedBlock.code}</code></pre>
+
+          <div className="code-display-body">
+            <div className="code-display-lines">
+              {lineasCodigo.map((_, idx) => (
+                <span key={idx}>{idx + 1}</span>
+              ))}
+            </div>
+            <pre className="code-display-content">
+              <code>{selectedBlock.code}</code>
+            </pre>
+          </div>
         </div>
 
       </div>

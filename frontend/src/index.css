@@ -2219,6 +2219,90 @@ tbody td {
   color: var(--accent-green);
 }
 
+/* ═══════════════════════════════════════════════
+   VISOR DE CÓDIGO TIPO IDE DE ALTA LEGIBILIDAD
+═══════════════════════════════════════════════ */
+.full-code-display-box {
+  background: #0d0d18;
+  border: 1px solid rgba(108, 99, 255, 0.35);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  margin-top: 0.5rem;
+}
+
+.code-display-header {
+  background: #141424;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.code-display-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.code-display-dots .dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.code-display-dots .dot.red { background: #ff5f56; }
+.code-display-dots .dot.yellow { background: #ffbd2e; }
+.code-display-dots .dot.green { background: #27c93f; }
+
+.code-display-dots .file-name {
+  margin-left: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+.copy-code-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+}
+
+.code-display-body {
+  display: flex;
+  max-height: 480px;
+  overflow-y: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.code-display-lines {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0.65rem;
+  background: #080810;
+  color: #4a4a68;
+  user-select: none;
+  text-align: right;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  min-width: 42px;
+}
+
+.code-display-content {
+  padding: 1rem 1.25rem;
+  color: #f1f5f9;
+  white-space: pre;
+  overflow-x: auto;
+  flex: 1;
+  line-height: 1.6;
+}
+
+.code-display-content code {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+
 
 
 
