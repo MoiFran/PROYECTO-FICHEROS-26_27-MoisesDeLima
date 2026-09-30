@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { guardarFichero } from '../api';
+import { guardarFichero, saveEnvioToDB } from '../api';
 import ModalConfirmacion from './ModalConfirmacion';
 
 const FORMATOS = [
@@ -23,20 +23,21 @@ const VACIO = {
   peso: '', fechaEnvio: '', fechaEstimadaEntrega: '',
 };
 
-export default function Workspace({ onToast }) {
+export default function Workspace({ onToast, onGuardadoDB }) {
   const [form, setForm]           = useState(VACIO);
   const [formato, setFormato]     = useState('json');
   const [nombre, setNombre]       = useState('envio');
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading]     = useState(false);
+  const [loadingFile, setLF]     = useState(false);
+  const [loadingDB, setLDB]       = useState(false);
 
   const ext = FORMATOS.find(f => f.key === formato)?.ext || '';
 
   const handleChange = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
   const handleLimpiar = () => setForm(VACIO);
 
-  // ─── Abrir Modal de Confirmación ─────────────────────────────
-  const handleGuardarClick = () => {
+  // ─── Abrir Modal de Confirmación Fichero ─────────────────────
+  const handleGuardarFileClick = () => {
     if (!form.numeroCliente?.trim()) {
       onToast('⚠️ Rellena al menos el Nº de cliente para crear el envío', 'error');
       return;
@@ -48,17 +49,35 @@ export default function Workspace({ onToast }) {
     setShowModal(true);
   };
 
-  // ─── Confirmar descarga ──────────────────────────────────────
-  const handleConfirmar = async () => {
+  // ─── Confirmar descarga de Fichero ───────────────────────────
+  const handleConfirmarFile = async () => {
     setShowModal(false);
-    setLoading(true);
+    setLF(true);
     try {
       const filename = await guardarFichero(form, formato, nombre.trim());
-      onToast(`✅ "${filename}" descargado correctamente en tu ordenador`, 'success');
+      onToast(`✅ "${filename}" guardado y descargado en tu ordenador`, 'success');
     } catch (e) {
-      onToast(`❌ Error al guardar: ${e.message}`, 'error');
+      onToast(`❌ Error al guardar fichero: ${e.message}`, 'error');
     } finally {
-      setLoading(false);
+      setLF(false);
+    }
+  };
+
+  // ─── Guardar en Base de Datos ────────────────────────────────
+  const handleGuardarDBClick = async () => {
+    if (!form.numeroCliente?.trim()) {
+      onToast('⚠️ Rellena al menos el Nº de cliente para guardar en BD', 'error');
+      return;
+    }
+    setLDB(true);
+    try {
+      const saved = await saveEnvioToDB(form);
+      onToast(`🎉 Envío registrado en la Base de Datos con ID #${saved.id}`, 'success');
+      if (onGuardadoDB) onGuardadoDB();
+    } catch (e) {
+      onToast(`❌ Error al guardar en Base de Datos: ${e.message}`, 'error');
+    } finally {
+      setLDB(false);
     }
   };
 
@@ -70,9 +89,9 @@ export default function Workspace({ onToast }) {
           <div className="workspace-title">
             <span className="workspace-icon">✍️</span>
             <div>
-              <h2>Bloque 1 · Creación y Guardado de Envíos</h2>
+              <h2>Bloque 1 · Creación y Persistencia de Envíos</h2>
               <p className="workspace-sub">
-                Introduce los datos del envío, elige el formato de salida y descárgalo directamente en tu equipo.
+                Introduce los datos del envío y elige si deseas guardarlo en un fichero físico o en la Base de Datos.
               </p>
             </div>
           </div>
@@ -105,7 +124,7 @@ export default function Workspace({ onToast }) {
         <div className="ws-controls">
           {/* Formato */}
           <div className="ws-control-group">
-            <span className="ws-control-label">Formato de salida</span>
+            <span className="ws-control-label">Formato de Fichero</span>
             <div className="format-selector ws-format">
               {FORMATOS.map(({ key, label, icon }) => (
                 <button
@@ -136,25 +155,34 @@ export default function Workspace({ onToast }) {
           </div>
         </div>
 
-        {/* Botón de acción */}
+        {/* Botones de acción */}
         <div className="ws-actions">
           <button
-            id="btn-b1-guardar"
+            id="btn-b1-guardar-fichero"
             className="btn btn-primary ws-btn"
-            onClick={handleGuardarClick}
-            disabled={loading}
+            onClick={handleGuardarFileClick}
+            disabled={loadingFile}
           >
-            {loading ? <><div className="spinner" /> Guardando y descargando…</> : '💾 Guardar fichero'}
+            {loadingFile ? <><div className="spinner" /> Guardando fichero…</> : '💾 Guardar en Fichero'}
+          </button>
+
+          <button
+            id="btn-b1-guardar-db"
+            className="btn btn-success ws-btn"
+            onClick={handleGuardarDBClick}
+            disabled={loadingDB}
+          >
+            {loadingDB ? <><div className="spinner" /> Guardando en BD…</> : '🗄️ Guardar en Base de Datos'}
           </button>
         </div>
       </div>
 
-      {/* Pop-up modal de confirmación */}
+      {/* Pop-up modal de confirmación de fichero */}
       {showModal && (
         <ModalConfirmacion
           formato={formato}
           nombreFichero={nombre.trim()}
-          onConfirmar={handleConfirmar}
+          onConfirmar={handleConfirmarFile}
           onCancelar={() => setShowModal(false)}
         />
       )}

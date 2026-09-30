@@ -30,8 +30,8 @@ export default function App() {
           <p>Manejo de Ficheros en Formatos: Binario (.dat) · XML (.xml) · CSV (.csv) · JSON (.json)</p>
         </header>
 
-        {/* Bloque 1: Creación y Guardado de Ficheros */}
-        <Workspace onToast={addToast} />
+        {/* Bloque 1: Creación y Persistencia de Envíos */}
+        <Workspace onToast={addToast} onGuardadoDB={fetchHistorial} />
 
         {/* Bloque 2: Conversor Interactivo de Ficheros */}
         <ConversorFicheros onToast={addToast} />
