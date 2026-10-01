@@ -1,19 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { deleteEnvio } from '../api';
 import ModalVisorWeb from './ModalVisorWeb';
 
 export default function HistorialTable({ envios, onRefresh, onToast }) {
   const [envioVisor, setEnvioVisor] = useState(null);
+  const [localEnvios, setLocalEnvios] = useState(envios);
+
+  // Sincronizamos envios cuando cambie la prop
+  useEffect(() => {
+    setLocalEnvios(envios);
+  }, [envios]);
 
   const handleDelete = async (id, e) => {
-    e.stopPropagation();
-    if (!confirm(`¿Eliminar el envío con ID #${id} de la Base de Datos?`)) return;
+    if (e) e.stopPropagation();
+
+    // 1. Actualización Optimista Instantánea (0ms de latencia)
+    setLocalEnvios(prev => prev.filter(item => item.id !== id));
+    onToast(`🗑️ Eliminando envío #${id} de la BD…`, 'info');
+
+    // 2. Operación de eliminación asíncrona en segundo plano
     try {
       await deleteEnvio(id);
-      onToast(`🗑️ Envío #${id} eliminado de la BD`, 'info');
-      onRefresh();
-    } catch {
-      onToast('❌ Error al eliminar el envío', 'error');
+      onToast(`✅ Envío #${id} eliminado con éxito`, 'success');
+      if (onRefresh) onRefresh();
+    } catch (err) {
+      // Revertimos en caso de error
+      setLocalEnvios(envios);
+      onToast(`❌ No se pudo eliminar el envío #${id}: ${err.message}`, 'error');
     }
   };
 
@@ -29,7 +42,7 @@ export default function HistorialTable({ envios, onRefresh, onToast }) {
           <div className="icon">🗄️</div>
           Historial y Registro en Base de Datos
           <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            {envios.length} registro{envios.length !== 1 ? 's' : ''}
+            {localEnvios.length} registro{localEnvios.length !== 1 ? 's' : ''}
           </span>
           <button
             id="btn-refresh"
@@ -41,7 +54,7 @@ export default function HistorialTable({ envios, onRefresh, onToast }) {
           </button>
         </div>
 
-        {envios.length === 0 ? (
+        {localEnvios.length === 0 ? (
           <div className="table-empty">
             No hay envíos guardados en la base de datos todavía.
           </div>
@@ -61,7 +74,7 @@ export default function HistorialTable({ envios, onRefresh, onToast }) {
                 </tr>
               </thead>
               <tbody>
-                {envios.map(e => (
+                {localEnvios.map(e => (
                   <tr
                     key={e.id}
                     style={{ cursor: 'pointer' }}
@@ -119,3 +132,4 @@ export default function HistorialTable({ envios, onRefresh, onToast }) {
     </>
   );
 }
+
