@@ -11,6 +11,16 @@ export default function App() {
   const [historial, setHistorial] = useState([]);
   const [toasts, setToasts]       = useState([]);
 
+  // Estado del Tema (Modo Claro vs Modo Oscuro)
+  const [theme, setTheme]         = useState(() => localStorage.getItem('app-theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+
   const addToast = useCallback((msg, type = 'info') => {
     const id = Date.now();
     setToasts(prev => [...prev, { id, msg, type }]);
@@ -23,9 +33,26 @@ export default function App() {
 
   useEffect(() => { fetchHistorial(); }, [fetchHistorial]);
 
+  // Componente del Botón Flotante para cambiar de tema
+  const renderThemeToggle = () => (
+    <button
+      id="btn-toggle-theme"
+      className="btn-theme-toggle"
+      onClick={toggleTheme}
+      title={theme === 'dark' ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro'}
+    >
+      <span>{theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}</span>
+    </button>
+  );
+
   // Si estamos en la ruta de presentación
   if (vista === 'presentacion') {
-    return <PresentacionPage onVolver={() => setVista('app')} />;
+    return (
+      <>
+        {renderThemeToggle()}
+        <PresentacionPage onVolver={() => setVista('app')} />
+      </>
+    );
   }
 
   return (
@@ -40,6 +67,9 @@ export default function App() {
         <span className="pres-btn-icon">🎓</span>
         <span className="pres-btn-text">Acceso a la Presentación</span>
       </button>
+
+      {/* Botón flotante superior derecho para alternar Modo Claro / Modo Oscuro */}
+      {renderThemeToggle()}
 
       <div className="app-wrapper">
         <header className="app-header">
@@ -70,5 +100,6 @@ export default function App() {
     </>
   );
 }
+
 
 

@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ═══════════════════════════════════════════════
-   TOKENS DE DISEÑO
+   TOKENS DE DISEÑO Y SISTEMA DE TEMAS (DARK / LIGHT)
 ═══════════════════════════════════════════════ */
-:root {
+:root, [data-theme="dark"] {
   --bg-primary: #0a0a0f;
   --bg-secondary: #12121a;
-  --bg-card: #1a1a2e;
-  --bg-glass: rgba(26, 26, 46, 0.7);
-  --bg-input: #0f0f1a;
+  --bg-card: #161626;
+  --bg-glass: rgba(22, 22, 38, 0.85);
+  --bg-input: #101020;
 
   --accent-primary: #6c63ff;
   --accent-secondary: #a78bfa;
@@ -17,18 +17,56 @@
   --accent-yellow: #fbbf24;
   --accent-cyan: #22d3ee;
 
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #475569;
+  --text-heading: #ffffff;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1; /* Mucho más brillante para subtítulos en modo oscuro! */
+  --text-muted: #94a3b8;     /* Alto contraste de legibilidad */
 
-  --border: rgba(108, 99, 255, 0.2);
-  --border-hover: rgba(108, 99, 255, 0.5);
+  --border: rgba(108, 99, 255, 0.25);
+  --border-hover: rgba(167, 139, 250, 0.6);
 
-  --shadow-glow: 0 0 40px rgba(108, 99, 255, 0.15);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px rgba(108, 99, 255, 0.2);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
   --radius: 14px;
   --radius-sm: 8px;
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --code-bg: #0f172a;
+  --code-text: #f8fafc;
+
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-input: #f1f5f9;
+
+  --accent-primary: #4f46e5;
+  --accent-secondary: #7c3aed;
+  --accent-green: #059669;
+  --accent-red: #dc2626;
+  --accent-yellow: #d97706;
+  --accent-cyan: #0891b2;
+
+  --text-heading: #0f172a;
+  --text-primary: #1e293b;
+  --text-secondary: #475569; /* Oscuro nítido para subtítulos en modo claro */
+  --text-muted: #64748b;
+
+  --border: #cbd5e1;
+  --border-hover: #7c3aed;
+
+  --shadow-glow: 0 4px 25px rgba(124, 58, 237, 0.12);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.07);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --code-bg: #1e293b;
+  --code-text: #f8fafc;
+
+  color-scheme: light;
 }
 
 /* ═══════════════════════════════════════════════
@@ -48,10 +86,12 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
   background-image:
-    radial-gradient(ellipse at 20% 20%, rgba(108, 99, 255, 0.07) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 60%);
+    radial-gradient(ellipse at 20% 20%, rgba(108, 99, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.06) 0%, transparent 60%);
 }
+
 
 /* ═══════════════════════════════════════════════
    LAYOUT
@@ -1617,6 +1657,38 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 6px 28px rgba(108, 99, 255, 0.5);
   border-color: var(--accent-secondary);
 }
+
+/* ═══════════════════════════════════════════════
+   BOTÓN FLOTANTE SUPERIOR DERECHO — MODO CLARO / OSCURO
+═══════════════════════════════════════════════ */
+.btn-theme-toggle {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hover);
+  color: var(--text-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.btn-theme-toggle:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: var(--shadow-glow), var(--shadow-card);
+  border-color: var(--accent-secondary);
+}
+
 
 .pres-btn-icon { font-size: 1.1rem; }
 
