@@ -901,6 +901,26 @@ tbody td {
 
 .ws-field input::placeholder { color: var(--text-muted); }
 
+/* Estilos para hacer visible el icono de calendario en input[type="date"] */
+input[type="date"] {
+  color-scheme: dark;
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+  opacity: 0.95;
+  padding: 0.2rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.18);
+}
+
+
 /* Fila de controles: formato + nombre */
 .ws-controls {
   display: flex;

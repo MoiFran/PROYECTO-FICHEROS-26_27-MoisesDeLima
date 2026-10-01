@@ -159,6 +159,7 @@ export default function Workspace({ onToast, onGuardadoDB }) {
                   min={minAttr}
                   step={type === 'number' ? 0.01 : undefined}
                   onChange={e => handleChange(key, e.target.value)}
+                  onClick={type === 'date' ? (e => { try { if (e.target.showPicker) e.target.showPicker(); } catch {} }) : undefined}
                 />
               </div>
             );
