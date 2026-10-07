@@ -79,7 +79,7 @@ ${envioDatos.numeroCliente || ''},${envioDatos.numeroSeguimiento || ''},"${envio
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
-      <div className="modal-box modal-visor-box" onClick={e => e.stopPropagation()}>
+      <div id="visor-modal-box" className="modal-box modal-visor-box" onClick={e => e.stopPropagation()}>
         {/* Cabecera de la ventana Visor Web */}
         <div className="visor-header">
           <div className="visor-title-group">
@@ -92,7 +92,7 @@ ${envioDatos.numeroCliente || ''},${envioDatos.numeroSeguimiento || ''},"${envio
             </div>
           </div>
 
-          <div className="visor-header-actions">
+          <div id="visor-header-actions" className="visor-header-actions">
             <button className="btn btn-ghost btn-sm" onClick={handleCopiar}>
               {copiado ? '✅ ¡Copiado!' : '📋 Copiar contenido'}
             </button>
@@ -103,7 +103,7 @@ ${envioDatos.numeroCliente || ''},${envioDatos.numeroSeguimiento || ''},"${envio
         </div>
 
         {/* Pestañas de cambio de formato dinámico */}
-        <div className="visor-tabs-bar">
+        <div id="visor-tabs-bar" className="visor-tabs-bar">
           <span className="visor-tabs-label">Vista de formato:</span>
           <div className="visor-tabs">
             {FORMATOS.map(({ key, label, icon, color }) => {
@@ -125,13 +125,13 @@ ${envioDatos.numeroCliente || ''},${envioDatos.numeroSeguimiento || ''},"${envio
         </div>
 
         {/* Banner Explicativo Pedagógico */}
-        <div className="visor-explanation" style={{ borderColor: `${fmtActual.color}40`, background: `${fmtActual.color}08` }}>
+        <div id="visor-explanation" className="visor-explanation" style={{ borderColor: `${fmtActual.color}40`, background: `${fmtActual.color}08` }}>
           <span className="exp-icon">💡</span>
           <p>{EXPLICACIONES[formatoActivo]}</p>
         </div>
 
         {/* Ventana de Código IDE con números de línea */}
-        <div className="visor-code-container">
+        <div id="visor-code-container" className="visor-code-container">
           <div className="visor-code-bar">
             <span className="code-bar-dot red" />
             <span className="code-bar-dot yellow" />

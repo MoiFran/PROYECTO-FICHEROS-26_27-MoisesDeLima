@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { abrirFichero } from '../api';
 import ModalVisorWeb from './ModalVisorWeb';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 const FORMATOS = [
   { key: 'dat',  label: 'Binario', ext: '.dat',  icon: '📦', color: '#f59e0b' },
@@ -21,6 +23,88 @@ export default function VisorWebFicheros({ onToast }) {
   const [showVisor, setShowVisor]               = useState(false);
 
   const fileRef = useRef(null);
+
+  // ─── Tour Guiado con Driver.js (Abre Modal Automáticamente) ─
+  const handleIniciarGuia = () => {
+    // Si no hay datos cargados, preparamos datos de ejemplo pedagógicos para la demostración
+    if (!envioDatos) {
+      setEnvioDatos({
+        numeroCliente: 'CLI-001',
+        numeroSeguimiento: 'SEG-2026-DEMO',
+        destino: 'Madrid, España',
+        peso: 2.5,
+        fechaEnvio: '2026-10-07',
+        fechaEstimadaEntrega: '2026-10-10'
+      });
+      setFicheroNombre('envio_demo_ejemplo.json');
+      setFormatoDetectado('json');
+      setFormatoElegido('json');
+    }
+
+    // Abrimos el modal de inspección
+    setShowVisor(true);
+
+    // Damos un breve margen (150ms) para que el modal renderice en el DOM
+    setTimeout(() => {
+      const driverObj = driver({
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        nextBtnText: 'Siguiente ➔',
+        prevBtnText: '⬅️ Anterior',
+        doneBtnText: '✅ Entendido',
+        steps: [
+          {
+            element: '#visor-modal-box',
+            popover: {
+              title: '1. Visor Web IDE Integrado',
+              description: 'Al cargar cualquier archivo, se abre esta ventana que permite leer e inspeccionar el código interno sin aplicaciones externas.',
+              side: 'bottom',
+              align: 'center'
+            }
+          },
+          {
+            element: '#visor-tabs-bar',
+            popover: {
+              title: '2. Pestañas de Formato Dinámico',
+              description: 'Puedes hacer clic en JSON, XML, CSV o Binario (.dat) para ver en tiempo real cómo se estructuran los mismos datos en los 4 formatos.',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#visor-explanation',
+            popover: {
+              title: '3. Explicación Técnica y Pedagógica',
+              description: 'Muestra una definición clara del formato seleccionado (por ejemplo, qué es JSON, etiquetas XML, filas CSV o el HexDump en Binario).',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#visor-code-container',
+            popover: {
+              title: '4. Editor de Código con Números de Línea',
+              description: 'Muestra el contenido crudo decodificado con resaltado y numeración de líneas idéntica a un entorno IDE profesional.',
+              side: 'top',
+              align: 'center'
+            }
+          },
+          {
+            element: '#visor-header-actions',
+            popover: {
+              title: '5. Copiar al Portapapeles y Cerrar',
+              description: 'Permite copiar el contenido del archivo con un solo clic o cerrar la ventana de inspección.',
+              side: 'left',
+              align: 'start'
+            }
+          }
+        ]
+      });
+
+      driverObj.drive();
+    }, 150);
+  };
 
   // ─── Leer fichero ────────────────────────────────────────────
   const procesarFichero = async (file) => {
@@ -90,11 +174,21 @@ export default function VisorWebFicheros({ onToast }) {
               </p>
             </div>
           </div>
-          {ficheroNombre && (
-            <button className="btn btn-ghost btn-sm" onClick={handleReset}>
-              🔄 Cargar otro archivo
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <button
+              id="btn-b3-guia"
+              className="btn btn-cyan btn-sm"
+              onClick={handleIniciarGuia}
+              title="Iniciar tour guiado paso a paso para el Bloque 3"
+            >
+              💡 Guía de uso
             </button>
-          )}
+            {ficheroNombre && (
+              <button className="btn btn-ghost btn-sm" onClick={handleReset}>
+                🔄 Cargar otro archivo
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="workspace-divider" />

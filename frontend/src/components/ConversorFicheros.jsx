@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { abrirFichero, guardarFichero } from '../api';
 import ModalConversion from './ModalConversion';
+import { driver } from 'driver.js';
+import 'driver.js/dist/driver.css';
 
 const FORMATOS = [
   { key: 'dat',  label: 'Binario', ext: '.dat',  icon: '📦', color: '#f59e0b' },
@@ -23,6 +25,67 @@ export default function ConversorFicheros({ onToast }) {
   const [showModal, setShowModal]                     = useState(false);
 
   const fileRef = useRef(null);
+
+  // ─── Tour Guiado con Driver.js ─────────────────────────────
+  const handleIniciarGuia = () => {
+    const driverObj = driver({
+      showProgress: true,
+      animate: true,
+      allowClose: true,
+      nextBtnText: 'Siguiente ➔',
+      prevBtnText: '⬅️ Anterior',
+      doneBtnText: '✅ Entendido',
+      steps: [
+        {
+          element: '.conversor-card--origen',
+          popover: {
+            title: '1. Cargar Fichero Origen',
+            description: 'Haz clic o arrastra un fichero existente (.dat, .xml, .csv o .json) para inspeccionar y preparar su conversión.',
+            side: 'bottom',
+            align: 'start'
+          }
+        },
+        {
+          element: '.conversor-connector',
+          popover: {
+            title: '2. Indicador de Transición',
+            description: 'Muestra el estado del flujo de transformación bidireccional entre los dos formatos.',
+            side: 'bottom',
+            align: 'center'
+          }
+        },
+        {
+          element: '.conversor-card--destino',
+          popover: {
+            title: '3. Selección de Formato Destino',
+            description: 'Elige a qué formato quieres transformar el fichero. Se impedirá la conversión si seleccionas el mismo formato de origen.',
+            side: 'bottom',
+            align: 'start'
+          }
+        },
+        {
+          element: '#b2-nombre-destino',
+          popover: {
+            title: '4. Nombre del Fichero Resultante',
+            description: 'Define el nombre para el archivo convertido (ej. "datos_envio_convertido").',
+            side: 'top',
+            align: 'start'
+          }
+        },
+        {
+          element: '#btn-b2-convertir',
+          popover: {
+            title: '5. Ejecutar Conversión y Descarga',
+            description: 'Transforma la estructura de los datos en memoria y descarga automáticamente el nuevo archivo.',
+            side: 'top',
+            align: 'center'
+          }
+        }
+      ]
+    });
+
+    driverObj.drive();
+  };
 
   // ─── Procesar fichero cargado ────────────────────────────────
   const procesarFicheroOrigen = async (file) => {
@@ -120,11 +183,21 @@ export default function ConversorFicheros({ onToast }) {
               </p>
             </div>
           </div>
-          {ficheroOrigenNombre && (
-            <button className="btn btn-ghost btn-sm" onClick={handleResetOrigen}>
-              🔄 Cargar otro fichero
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <button
+              id="btn-b2-guia"
+              className="btn btn-cyan btn-sm"
+              onClick={handleIniciarGuia}
+              title="Iniciar tour guiado paso a paso para el Bloque 2"
+            >
+              💡 Guía de uso
             </button>
-          )}
+            {ficheroOrigenNombre && (
+              <button className="btn btn-ghost btn-sm" onClick={handleResetOrigen}>
+                🔄 Cargar otro fichero
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="workspace-divider" />

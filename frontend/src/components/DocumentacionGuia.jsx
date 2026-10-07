@@ -10,22 +10,6 @@ const LIBRERIAS_BACKEND = [
     justification: 'Permite crear una API limpia y desacoplada que procesa las peticiones de guardado y conversión de ficheros recibiendo y devolviendo JSON, XML o flujos binarios.'
   },
   {
-    name: 'spring-boot-starter-data-jpa',
-    file: 'pom.xml',
-    version: '3.x',
-    purpose: 'Persistencia Objeto-Relacional (ORM Hibernate)',
-    description: 'Abstracción JPA sobre Hibernate ORM. Mapea la entidad Envio.java a tablas SQL relacionales y ofrece repositorios sin escribir SQL manual.',
-    justification: 'Evita la inyección SQL y el código repetitivo de JDBC tradicional, automatizando las operaciones CRUD mediante EnvioRepository que extiende JpaRepository.'
-  },
-  {
-    name: 'com.h2database:h2',
-    file: 'pom.xml',
-    version: '2.x',
-    purpose: 'Motor de Base de Datos Relacional In-Memory',
-    description: 'Base de datos en memoria ultraligera (jdbc:h2:mem:enviosdb) que se inicia automáticamente con la aplicación Spring Boot.',
-    justification: 'Permite evaluar el proyecto de inmediato sin requerir la instalación o configuración de servidores de bases de datos externos como MySQL o PostgreSQL en la máquina del profesor.'
-  },
-  {
     name: 'jackson-dataformat-xml',
     file: 'pom.xml',
     version: '2.x',
@@ -59,6 +43,14 @@ const LIBRERIAS_FRONTEND = [
     purpose: 'Biblioteca Reactiva de Interfaz de Usuario',
     description: 'Librería central de la interfaz estructurada en componentes reactivos mediante Hooks (useState, useEffect, useRef, useMemo).',
     justification: 'Renderiza los cambios en el DOM Virtual al instante sin recargar la página web, ofreciendo una experiencia fluida al cambiar de pestaña o convertir ficheros.'
+  },
+  {
+    name: 'driver.js',
+    file: 'package.json',
+    version: '1.3+',
+    purpose: 'Tours Guiados Interactivos Paso a Paso',
+    description: 'Librería que genera superposiciones (overlays), resaltado de elementos del DOM y popovers explicativos.',
+    justification: 'Permite ofrecer guiado interactivo contextual en cada uno de los 4 bloques de trabajo del proyecto (Bloque 1, 2, 3 y 4).'
   },
   {
     name: 'vite & @vitejs/plugin-react',
@@ -116,9 +108,9 @@ const GUIA_PASOS = [
   {
     step: '02',
     title: 'Bloque 1: Crear y Persistir Envíos Logísticos',
-    tag: 'Formulario & Persistencia',
+    tag: 'Formulario & Persistencia de Ficheros',
     color: '#8b5cf6',
-    desc: 'Introduce los datos del envío (Código de cliente, seguimiento, destino, peso, fechas). Haz clic en "💾 Guardar en Fichero" para descargar en formato .dat, .xml, .csv o .json, o pulsa "🗄️ Guardar en BD" para registrarlo físicamente mediante Spring Data JPA.'
+    desc: 'Introduce los datos del envío (Código de cliente, seguimiento, destino, peso, fechas). Haz clic en "💾 Guardar en Fichero" para descargar en formato .dat, .xml, .csv o .json. El botón de guardado en BD queda deshabilitado para futuras unidades de BD y ORM.'
   },
   {
     step: '03',
@@ -136,17 +128,17 @@ const GUIA_PASOS = [
   },
   {
     step: '05',
-    title: 'Bloque 4: Historial en Base de Datos Relacional H2',
-    tag: 'Base de Datos & JPA',
+    title: 'Bloque 4: Módulo de Historial y Base de Datos (Pospuesto)',
+    tag: 'Base de Datos & ORM (UT03/UT04)',
     color: '#f59e0b',
-    desc: 'Consulta todos los envíos registrados en la tabla relacional H2. Puedes pulsar el botón "👁️ Ver en Visor" de cualquier registro para auditar su estructura cruda en JSON o XML directamente en el visor de código.'
+    desc: 'Bloque pospuesto formalmente para las unidades temáticas de Bases de Datos y ORM. Se muestra un banner explicativo sobre el enfoque 100% de ficheros para el cumplimiento de esta UT02.'
   },
   {
     step: '06',
     title: 'Presentación Académica de Defensa en Cubo 3D',
     tag: 'Ruta /presentacion',
     color: '#06b6d4',
-    desc: 'Haz clic en el botón flotante ubicado en la esquina superior izquierda (con animación de vibración de 3 segundos al iniciar) para entrar en la ruta de presentación interactiva por cubos 3D donde se defienden los 6 bloques del proyecto con justificaciones y código.'
+    desc: 'Haz clic en el botón flotante ubicado en la esquina superior izquierda (con animación de vibración de 3 segundos al iniciar) para entrar en la ruta de presentación interactiva por cubos 3D donde se defienden los bloques del proyecto con justificaciones y código.'
   },
   {
     step: '07',

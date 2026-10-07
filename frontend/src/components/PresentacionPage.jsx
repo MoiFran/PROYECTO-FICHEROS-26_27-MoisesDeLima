@@ -192,44 +192,34 @@ public class FileService {
     icon: '🗄️',
     color: '#fbbf24',
     gradient: 'linear-gradient(135deg, rgba(251,191,36,0.2), rgba(217,119,6,0.05))',
-    title: 'Base de Datos & ORM (H2 / JPA)',
-    sub: 'Persistencia Relacional en BD',
-    tech: ['Spring Data JPA', 'Hibernate ORM', 'H2 Database', 'PostgreSQL'],
+    title: 'Base de Datos & ORM (Pospuesto)',
+    sub: 'Persistencia Relacional en BD (UT03/UT04)',
+    tech: ['Spring Data JPA', 'Hibernate ORM', 'H2 Database'],
     
-    requisito: 'Implementar almacenamiento persistente en Base de Datos Relacional para mantener un historial de envíos registrados.',
-    justificacion: 'Se utilizó Spring Data JPA con Hibernate ORM. Evita escribir SQL manual propenso a errores (SQL Injection) al mapear la clase Java @Entity Envio a la tabla relacional ENVIOS. Se configuró H2 en memoria (jdbc:h2:mem:enviosdb) para permitir ejecución 100% libre de instalaciones.',
-    extras: 'Acceso directo a la Consola Web de H2 en /h2-console para auditar físicamente la tabla SQL, e integración directa para inspeccionar registros de la BD en el Visor Web.',
-    justificacionExtras: 'Permite al docente/evaluador comprobar físicamente que las filas SQL existen en la tabla relacional durante la defensa del proyecto.',
+    requisito: 'Módulo de almacenamiento en Base de Datos Relacional.',
+    justificacion: 'Este módulo se pospone formalmente para las unidades temáticas de Bases de Datos y ORM (UT03 / UT04). El cumplimiento de la presente UT02 se limita al 100% en la manipulación y conversión de Ficheros.',
+    extras: 'El código backend y la entidad JPA se mantienen preservados.',
+    justificacionExtras: 'Demuestra previsión de arquitectura para futuras entregas manteniendo el foco de la UT02.',
     
     fileName: 'Envio.java (Entidad Mapeada con JPA / Hibernate)',
     code: `package ut02.model;
 
 import jakarta.persistence.*;
 
-// 1. @Entity le indica a Hibernate que esta clase se mapea a una tabla SQL
+// Mapeo JPA preservado para las unidades de BD y ORM (UT03 / UT04)
 @Entity
 @Table(name = "envios")
 public class Envio {
-
-    // 2. @Id y @GeneratedValue definen la Clave Primaria Autonumérica de la tabla
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 3. Atributos del envío mapeados a columnas SQL de la tabla
-    @Column(name = "numero_cliente", nullable = false)
     private String numeroCliente;
-
     private String numeroSeguimiento;
     private String destino;
     private Double peso;
     private String fechaEnvio;
     private String fechaEstimadaEntrega;
-
-    // Constructor vacío exigido por la especificación de JPA
-    public Envio() {}
-
-    // Getters y Setters...
 }`,
   },
   {
@@ -274,7 +264,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]`,
   },
   {
     id: 'resilient',
-    numero: '06',
+    numero: '05',
     icon: '🛡️',
     color: '#60a5fa',
     gradient: 'linear-gradient(135deg, rgba(96,165,250,0.2), rgba(37,99,235,0.05))',

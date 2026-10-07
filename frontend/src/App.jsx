@@ -74,7 +74,7 @@ export default function App() {
       <div className="app-wrapper">
         <header className="app-header">
           <div className="badge">UT02 · Acceso a Datos</div>
-          <h1>Sistema de Gestión y Inspección de Envíos</h1>
+          <h1>Sistema de Gestión de Envíos</h1>
           <p>Manejo de Ficheros en Formatos: Binario (.dat) · XML (.xml) · CSV (.csv) · JSON (.json)</p>
         </header>
 
